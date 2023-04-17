@@ -9,12 +9,15 @@ def Carrier_decoder(Encrypted_image):
     bits = image.load()
 
     pixel_count = 0
+    binary_message = []
+
     for i in range(image.size[0]):
         for k in range(image.size[1]):
             red, green, blue = bits[i, k]
 
             while pixel_count < 8:
                 binary_length = [0]*8
+
                 binary_length[pixel_count] = read_lsb(red) 
                 pixel_count += 1
 
@@ -29,11 +32,17 @@ def Carrier_decoder(Encrypted_image):
                 pixel_count += 1
 
             if pixel_count < message_length+8:
-                red = read_lsb(red)
+                binary_message.append(read_lsb(red))
                 pixel_count += 1
+
             if pixel_count < message_length+8:
-                green = read_lsb(green)
+                binary_message.append(read_lsb(green))
                 pixel_count += 1
+
             if pixel_count < message_length+8:
-                blue = read_lsb(blue)
+                binary_message.append(read_lsb(blue))
                 pixel_count += 1
+
+            if pixel_count == message_length+8:
+                Hidden_message = ''.join([chr(int(''.join(binary_message[i:i+8]),2))for i in range(0,len(binary_message),8)])
+                return Hidden_message
