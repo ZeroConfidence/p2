@@ -14,41 +14,42 @@ def Carrier_embedder(Carrier,Message):
     message_binary = ''.join(format(ord(c),'08b')for c in Message)
     
     message_length_binary = bin(len(Message))[2:]
+    message_length_binary = '{:0>16}'.format(message_length_binary)
 
     pixels = image.load()
-    pixel_count = 0
+    Bits_encoded = 0
 
     for i in range(image.size[0]):
         for k in range(image.size[1]):
             red, green, blue = pixels[i, k]
 
-            while pixel_count < 16:
+            while Bits_encoded < 16:
                 
 
-                red = set_lsb(red,message_length_binary[pixel_count]) 
-                pixel_count += 1
+                red = set_lsb(red,message_length_binary[Bits_encoded]) 
+                Bits_encoded += 1
 
-                if pixel_count==16:
+                if Bits_encoded==16:
                     break
 
-                green = set_lsb(green,message_length_binary[pixel_count]) 
-                pixel_count += 1
+                green = set_lsb(green,message_length_binary[Bits_encoded]) 
+                Bits_encoded += 1
 
-                blue = set_lsb(blue,message_length_binary[pixel_count]) 
-                pixel_count += 1
+                blue = set_lsb(blue,message_length_binary[Bits_encoded]) 
+                Bits_encoded += 1
 
-            if pixel_count < len(message_binary+16):
-                red = set_lsb(red,(message_binary[pixel_count-16]))
-                pixel_count += 1
-            if pixel_count < len(message_binary+16):
-                green = set_lsb(green,(message_binary[pixel_count-16]))
-                pixel_count += 1
-            if pixel_count < len(message_binary+16):
-                blue = set_lsb(blue,(message_binary[pixel_count-16]))
-                pixel_count += 1
+            if Bits_encoded < len(message_binary+16) & Bits_encoded > 16:
+                red = set_lsb(red,(message_binary[Bits_encoded-16]))
+                Bits_encoded += 1
+            if Bits_encoded < len(message_binary+16) & Bits_encoded > 16:
+                green = set_lsb(green,(message_binary[Bits_encoded-16]))
+                Bits_encoded += 1
+            if Bits_encoded < len(message_binary+16) & Bits_encoded > 16:
+                blue = set_lsb(blue,(message_binary[Bits_encoded-16]))
+                Bits_encoded += 1
 
             pixels[i, k] = (red, green, blue)
 
 
-            if pixel_count >= len(message_binary+16):
+            if Bits_encoded >= len(message_binary+16) & Bits_encoded > 16:
                 return image
