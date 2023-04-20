@@ -1,27 +1,4 @@
 from PIL import Image
-<<<<<<< HEAD
-
-def Carrier_decoder(Carrier_ec):
-    image = Image.open(Carrier_ec)
-
-bits = image.load()
-
-pixel_count = 0
-for i in range(image.size[0]):
-    for k in range(image.size[1]):
-
-        red, green, blue = bits[i, k]
-
-        if pixel_count < len():
-            red = set_lsb(red,([pixel_count]))
-            pixel_count += 1
-        if pixel_count < len():
-            green = set_lsb(green,([pixel_count]))
-            pixel_count += 1
-        if pixel_count < len():
-            blue = set_lsb(blue,([pixel_count]))
-            pixel_count += 1
-=======
 """
 This code is designed to take an image with an encoded message hidden inside
 Then extract the message hidden inside an return it to the master code
@@ -78,4 +55,3 @@ def Carrier_decoder(Encrypted_image):
                 #Takes the binary message, splits it into 8 bit chunks, converts the binary chunks to int, converts the int to chr, then joins the chr to a string
                 Hidden_message = ''.join([chr(int(''.join(binary_message[i:i+8]),2))for i in range(0,len(binary_message),8)])
                 return Hidden_message
->>>>>>> Embedder_Alexander_Mads

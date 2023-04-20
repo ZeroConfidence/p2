@@ -1,6 +1,6 @@
-import Imagehandler                                                 #Imports Imagehandler file
-import Embedder                                                     #Imports Embedder file
-import Decoder                                                      #Imports Decoder file
+from Imagehandler import ImageSender                                                #Imports Imagehandler file
+from Embedder import Carrier_embedder                                                     #Imports Embedder file
+from decoder import Carrier_decoder                                                    #Imports Decoder file
 
 
 def ConncetionCheck(Connect):
@@ -10,8 +10,8 @@ def ConncetionCheck(Connect):
         print("Master File failed to connect")
 
 def Master_Encrypt(Stockbool,Stock_Number,Imported_Image,Message):  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
-    if (stockbool == true):                                         #If the stockbool is true
-        Stockimage = Imagesender(Stock_Number)                      #then stockimage calls the imagesender file with the stock_number as an input
+    if (Stockbool == 1):                                         #If the stockbool is true
+        Stockimage = ImageSender(Stock_Number)                      #then stockimage calls the imagesender file with the stock_number as an input
         return Carrier_embedder(Stockimage,Message)                 #returns the called carrier_embedder with the stockimage and messages as inputs
     else:                                                           #if else
         return Carrier_embedder(Imported_Image,Message)             #returns the called carrier_embedder with the imported_image and messages as inputs
