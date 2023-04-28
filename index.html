@@ -6,7 +6,6 @@
  	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Our Steganography Online</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cs-23-sw-2-08.p2datsw.cs.aau.dk/styles.css">
 	<link rel="stylesheet" href="styles.css"/>
 	<link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
 </head>
@@ -24,7 +23,7 @@
 
 				<!-- lave encode og decode knap -->
 		<ul class="nav nav-tabs" id="tabs" data-tabs="tabs">
-		<li role="presentation" class="active"><a href="#home" data-toggle="tab">Home</a></li> <!-- Tilføjer Hjem tabben -->			
+		<li role="presentation" class="active"><a href="#home" data-toggle="tab">Home</a></li> <!-- Tilf jer Hjem tabben -->			
 		<li role="presentation"><a href="#encode" data-toggle="tab">Encode</a></li> <!-- Indikerer at dette er "Encode" -->
 		<li role="presentation"><a href="#decode" data-toggle="tab">Decode</a></li> <!-- Indikerer at dette er "Decode" -->			
 	</ul>
@@ -32,7 +31,7 @@
 	<div id="my-tab-content" class="tab-content">
 
 					<!-- Hjem knap -->
-	<div role="tabpanel" class="tab-pane fade" id="home">
+	<div role="tabpanel" class="tab-pane fade active in" id="home">
 		<h1>Welcome to our steganography website!</h1>
 
 	<p>We offer a secure and easy way to hide secret messages in images. Explore our tool to encode and decode messages!</p>
@@ -55,7 +54,7 @@
 <form class="form">
 	<div class="form-group">
 		<input class="form-control" type="file" name="baseFile" onchange="previewEncodeImage()"> <!-- Tillader brugeren at uploade billedet, der skal bruges til kodning -->
-	<label for="Stockphotos">Or choose an image from our collection:</label> <!-- Fortæller brugeren, at de også kan vælge et billede fra samlingen -->
+	<label for="Stockphotos">Or choose an image from our collection:</label> <!-- Fort ller brugeren, at de ogs  kan v lge et billede fra samlingen -->
   <select class="form-control" id="Stockphotos" onchange="previewEncodeImageFromDropdown()">
   <option value="">Select an image</option>
   <option value="cat1">Cat 1</option>
@@ -86,7 +85,7 @@
       <div class="error" style="display: none;"></div> <!-- Besked til visning af fejl -->
 
       <div class="binary" style="display: none;">
-        <h3>Binary representation of your message</h3> <!-- Viser den binære repræsentation af den skjulte besked -->
+        <h3>Binary representation of your message</h3> <!-- Viser den bin re repr sentation af den skjulte besked -->
         <textarea class="form-control message" style="word-wrap:break-word;"></textarea>
       </div>
 
@@ -113,7 +112,7 @@
           To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong> button.<br/><br/>
           Neither the image nor the message that has been hidden will be at any moment transmitted over the web, all the magic happens within your browser.
         </p>
-        <form class="form">  <!-- Formular til at vælge billede til at afkode besked -->
+        <form class="form">  <!-- Formular til at v lge billede til at afkode besked -->
           <div class="form-group">
             <input class="form-control" type="file" name="decodeFile" onchange="previewDecodeImage()">
           </div>
