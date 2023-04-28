@@ -4,12 +4,28 @@ const sunIcon = document.querySelector(".toggle .bxs-sun");
 const moonIcon = document.querySelector(".toggle .bx-moon");
 
 toggle.addEventListener("change", () => {
-    
-    body.classList.toggle("dark");
+    dark_enabled = body.classList.toggle("dark");
     sunIcon.className = sunIcon.className == "bx bxs-sun" ? "bx bx-sun" : "bx bxs-sun";
     moonIcon.className = moonIcon.className == "bx bxs-moon" ? "bx bx-moon" : "bx bxs-moon";
 
+    localStorage.setItem("dark_enabled", dark_enabled ? "ye" : "ne");
+
 });
+
+
+if ( (localStorage.getItem("dark_enabled") || "ne") == "ne") {
+  dark_enabled = true;
+  dark_enabled = body.classList.toggle("dark");
+  localStorage.setItem("dark_enabled", dark_enabled ? "ye" : "ne");
+
+}
+
+
+
+if (Math.round(Math.random() * 10) == 2) {
+  window.location = "https://youtu.be/eVTXPUF4Oz4?t=18"
+}
+
 
 $('button.encode, button.decode').click(function(event) {
   event.preventDefault();
@@ -140,7 +156,7 @@ function encodeMessage() {
   messageContext.putImageData(message, 0, 0);
 
   $(".binary").fadeIn();
-  $(".images .nulled").fadeIn();
+  // $(".images .nulled").fadeIn();
   $(".images .message").fadeIn();
 };
 
@@ -171,7 +187,6 @@ function previewEncodeImageFromDropdown() {
         .fadeIn();
     };
     img.src = `https://cs-23-sw-2-08.p2datsw.cs.aau.dk/Stockphotos/${selectedOption}.png`; // replace example.com with your image URL
-
     $(".loading").fadeIn();
   }
 }
