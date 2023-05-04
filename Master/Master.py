@@ -1,25 +1,28 @@
-import Imagehandler                                                 #Imports Imagehandler file
-import Embedder                                                     #Imports Embedder file
-import Decoder                                                      #Imports Decoder file
-import json                                                         #Imports json lib
-import base64                                                       #Imports Base64 lib
+import Imagehandler                                                     #Imports Imagehandler file
+import Embedder                                                         #Imports Embedder file
+import Decoder                                                          #Imports Decoder file
+import json                                                             #Imports json lib
+import base64                                                           #Imports Base64 lib
 
 
 def rest_api():
     x
+
+
+    
 def JSON_Create():
-    Website_Package_Py = {                                          #Creates Python dictionary with inputs:
-        "b64_image": "x",                                           #the B64 image as a string element
-        "key":"x",                                                  #key as a string element
-        "msg":"x",                                                  #message that the user wishes to encode, as a string
-        "stock_num":0,                                              #the stock image's number, this is an integer value
-        "image":"x"                                                 #the base image as a string
+    Website_Package_Py = {                                              #Creates Python dictionary with inputs:
+        "b64_image": "x",                                               #the B64 image as a string element
+        "key":"x",                                                      #key as a string element
+        "msg":"x",                                                      #message that the user wishes to encode, as a string
+        "stock_num":0,                                                  #the stock image's number, this is an integer value
+        "image":"x"                                                     #the base image as a string
     }
-    return(Website_package)                                         #returns the dictionary
+    return(Website_package)                                             #returns the dictionary
 
 def Image_Converter(Image):
-    Bin_Image = bytes(Image)                        #converts the image into binary
-    B64_Image = b64encode(Bin_Image, altchars=none) #converts the binary string into base64
+    Bin_Image = bytes(Image)                                            #converts the image into binary
+    B64_Image = b64encode(Bin_Image, altchars=none)                     #converts the binary string into base64
     return(B64_Image)
 
 
