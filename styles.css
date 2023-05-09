@@ -1,0 +1,136 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+    margin-top:10vmin
+}
+:root {
+    --light-bg-color: #fafafa;
+    --dark-bg-color: #151d2a;
+
+    --light-secondary-color: #eaeaea;
+    --dark-secondary-color: #1d2b42;
+
+    --light-pure-color: #ffffff;
+    --dark-pure-color: #0e131b;
+
+    --light-tertiary-color: #e6e6e6;
+    --dark-tertiary-color: #1c2739;
+
+    /*
+    #0e131b,
+                -3px -3px 3px #1c2739;
+    */
+
+    --light-translate-ball: 0px;
+    --dark-translate-ball: 60px;
+}
+
+
+body {
+    --main-bg-color: var(--light-bg-color);
+    --main-secondary-color: var(--light-secondary-color);
+    --main-pure-color: var(--light-pure-color);
+    --main-tertiary-color: var(--light-tertiary-color);
+
+    --main-comp-color: var(--dark-bg-color);
+
+    --main-translate-ball: var(--light-translate-ball);
+}
+
+.dark {
+    --main-bg-color: var(--dark-bg-color);
+    --main-secondary-color: var(--dark-secondary-color);
+    --main-pure-color: var(--dark-pure-color);
+    --main-tertiary-color: var(--dark-tertiary-color);
+
+    --main-comp-color: var(--light-bg-color);
+
+    --main-translate-ball: var(--dark-translate-ball);
+}
+
+
+body {
+    background: var(--main-bg-color);
+}
+
+.toggle {
+    background: var(--main-secondary-color);
+    box-shadow: 3px 3px 4px var(--main-tertiary-color),
+                -3px -3px 4px var(--main-pure-color);
+
+    top:50%;
+    transform:translate(0px,-50%);
+}
+
+.bxs-sun {
+    color: var(--main-comp-color);
+}
+
+.bx-moon {
+    color: var(--main-comp-color);
+}
+
+.ball {
+    background: var(--main-bg-color);
+    transform: translateX(var(--main-translate-ball));
+}
+
+
+
+
+
+.toggle {
+    cursor: pointer;
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    width: 120px;
+    height: 60px;
+    border-radius: 50px;
+    transition: .2s;
+}
+
+.toggle i {
+    width: 50%;
+    line-height: 60px;
+    text-align: center;
+    font-size: 30px;
+    z-index: 1;
+}
+
+.toggle .ball {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    margin: 7.5px;
+    border-radius: 50%;
+    transition: .3s ease-out;
+}
+
+input {
+    display: none;
+}
+
+
+
+canvas {
+    width: 40vmin;
+    height: 40vmin;
+}
+
+
+
+.nulled {
+    display:none;
+}
+
+textarea {max-width: 100%;}
