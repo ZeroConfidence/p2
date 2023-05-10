@@ -3,6 +3,7 @@ import Embedder                                                         #Imports
 import Decoder                                                          #Imports Decoder file
 import json                                                             #Imports json lib
 import base64                                                           #Imports Base64 lib
+import io                                                               #Imports IO lib
 
 
 def rest_api():
@@ -20,7 +21,15 @@ def JSON_Create():
     }
     return(Website_package)                                             #returns the dictionary
 
-def Image_Converter(Image):
+def Image_Converter_Decode(B64_Image):
+    Bin_Image = b64decode(B64_Image,altchars=none)                      #converts the base64 string into binary
+    Byte_Image = bytes(Bin_Image,'utf-8')                               #converts the binary string into a byte grouping
+    IO_Image = io.bytesIO(Bin_Image)                                    #converts the byte grouping into a IO string
+    Image = Image.open(IO_Image)                                        #open the IO string with Pillow
+    return(Image)
+
+
+def Image_Converter_Encode(Image):
     Bin_Image = bytes(Image)                                            #converts the image into binary
     B64_Image = b64encode(Bin_Image, altchars=none)                     #converts the binary string into base64
     return(B64_Image)
