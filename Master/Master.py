@@ -1,53 +1,44 @@
-import Imagehandler                                                     #Imports Imagehandler file
-import Embedder                                                         #Imports Embedder file
-import Decoder                                                          #Imports Decoder file
+from Imagehandler import ImageSender                                               #Imports Imagehandler file
+from Embedder     import Carrier_embedder                                                    #Imports Embedder file
+from decoder      import Carrier_decoder                                                     #Imports Decoder file
 import json                                                             #Imports json lib
-import base64                                                           #Imports Base64 lib
-from flask import Flask
-import io                                                               #Imports IO lib
+from base64 import b64encode,b64decode                                                         #Imports Base64 lib
+from flask import Flask, request, jsonify
+import io
 
-
-def rest_api():
-    x
-
+app = Flask(__name__)
 
     
 def JSON_Create():
     Website_Package_Py = {                                              #Creates Python dictionary with inputs:
-        "b64_image": "x",                                               #the B64 image as a string element
-        "key":"x",                                                      #key as a string element
-        "msg":"x",                                                      #message that the user wishes to encode, as a string
-        "stock_num":0,                                                  #the stock image's number, this is an integer value
-        "image":"x"                                                     #the base image as a string
+        "b64_image": "",                                               #the B64 image as a string element                                                      #key as a string element
+        "msg":"",                                                      #message that the user wishes to encode, as a string
     }
-    return(Website_package)                                             #returns the dictionary
+    return Website_Package_Py                                             #returns the dictionary
 
-def Image_Converter_Decode(B64_Image):
-    Bin_Image = b64decode(B64_Image,altchars=none)                      #converts the base64 string into binary
+def Image_Converter_Decode(Encrypted_image):
+    Bin_Image = b64decode(Encrypted_image,altchars=None)                      #converts the base64 string into binary
     Byte_Image = bytes(Bin_Image,'utf-8')                               #converts the binary string into a byte grouping
-    IO_Image = io.bytesIO(Bin_Image)                                    #converts the byte grouping into a IO string
+    IO_Image = io.BytesIO(Bin_Image)                                    #converts the byte grouping into a IO string
     Image = Image.open(IO_Image)                                        #open the IO string with Pillow
     return(Image)
 
 
 def Image_Converter_Encode(Image):
     Bin_Image = bytes(Image)                                            #converts the image into binary
-    B64_Image = b64encode(Bin_Image, altchars=none)                     #converts the binary string into base64
-    return(B64_Image)
+    B64_Image = b64encode(Bin_Image, altchars=None)                     #converts the binary string into base64
+    return B64_Image
 
 
 def JSON_Sender(Website_Package_Py,msg,Key,Image,B64_Image,Stock_num):
     Website_Package_Py["b64_image"] = B64_Image                         #changes the dict value b64_image to the imported B64_Image variable
-    Website_Package_Py["key"] = Key                                     #changes the dict value key to the imported key variable
     Website_Package_Py["msg"] = msg                                     #changes the dict value msg to the imported msg variable
-    Website_Package_Py["image"]= Image                                  #changes the dict value image to the imported image variable
-    Website_Package_Py["stock_num"]=Stock_num                           #changes the dict value stock_num to the imported stock_num variable
-    Website_Package = json.dumps(Website_Package_Py, ensure_ascii=false)#dumps the python dict into a json file, retaining all character due to ensure_ascii=false
-    return(Website_Package)
+    Website_Package_Py = json.dumps(Website_Package_Py, ensure_ascii=False)#dumps the python dict into a json file, retaining all character due to ensure_ascii=false
+    return Website_Package_Py
 
 def JSON_receiver(JSON):
     JSON_Unpack = json.loads(JSON)
-    Return(JSON_Unpack)
+    return JSON_Unpack
 
 
 def Conncetion_Check(Connect):
@@ -57,14 +48,31 @@ def Conncetion_Check(Connect):
         print("Master File failed to connect")
 
 @app.route('/Master_Encrypt')
-def Master_Encrypt(Stockbool,Stock_Number,Imported_Image,Message):  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
-    if (Stockbool == true):                                         #If the stockbool is true
-        Stockimage = Imagesender(Stock_Number)                      #then stockimage calls the imagesender file with the stock_number as an input
-        return Carrier_embedder(Stockimage,Message,key)                 #returns the called carrier_embedder with the stockimage and messages as inputs
-    else:                                                           #if else
-        return Carrier_embedder(Imported_Image,Message,key)             #returns the called carrier_embedder with the imported_image and messages as inputs
-@app.route('/Master_Decrypt')
-def Master_Decrypt(Encrypted_image):                                    #Master decrypted calls for the encrypted image
+def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
+    json_from_js = request.json
+    Stock_bool = json_from_js['stock_bool']
+    Stock_Number = json_from_js['stock_number']
+    imported_image = json_from_js['imported_image']
+    message = json_from_js['message']
+    key = json_from_js['key']
     
+    
+    
+    if Stock_bool:                                         #If the stockbool is true
+        Stock_image = ImageSender(Stock_Number)                      #then stockimage calls the imagesender file with the stock_number as an input
+        return Carrier_embedder(Stock_image,message,key)                 #returns the called carrier_embedder with the stockimage and messages as inputs
+    else:                                                           #if else
+        return Carrier_embedder(imported_image,message,key)             #returns the called carrier_embedder with the imported_image and messages as inputs
+
+
+@app.route('/Master_Decrypt')
+def Master_Decrypt():                                    #Master decrypted calls for the encrypted image
+    json_from_js = request.json
+    Encrypted_image = json_from_js['Encrypted_image']
+    key = json_from_js['key']
+
+
     return Carrier_decoder(Encrypted_image,key)                         #returns the called Carrier decoder with the encrypted image as input
 
+if __name__ == '__main__':
+    app.run(debug=True)

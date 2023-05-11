@@ -22,9 +22,7 @@ if ( (localStorage.getItem("dark_enabled") || "ne") == "ne") {
 
 
 
-if (Math.round(Math.random() * 10) == 2) {
-  window.location = "https://youtu.be/eVTXPUF4Oz4?t=18"
-}
+
 
 
 $('button.encode, button.decode').click(function(event) {
@@ -96,8 +94,10 @@ function encodeMessage() {
 
   var image = $originalCanvas.image;
  
+  image_to_b64()
+
   const User_uploaded_encrypt = {
-    b64_image:'x',
+    b64_image_to_py:b64_image_to_py,
     key:1,
     msg:text,
     stock_num:0,
@@ -107,13 +107,13 @@ function encodeMessage() {
     'width': width,
     'height': height
   });
-  // Normalize the original image and draw it
+  // Normalize the origiFnal image and draw it
   var original = originalContext.getImageData(0, 0, width, height);
   
   fetch('/Master/Master_Encrypt',{
     method:'post',
     headers:{'content-type':'application/json'},
-    body:json.stringify(User_uploaded_decrypt                                         )//size matters do not question.
+    body:json.stringify(User_uploaded_encrypt                                         )//size matters do not question.
     }
     
   )
@@ -122,7 +122,7 @@ function encodeMessage() {
 })
 .then(responseData)
 {
-  //get recreate image
+  b64_to_image(B64_image_to_js)
 }
   
 
@@ -172,7 +172,7 @@ function decodeMessage() {
   var originalContext = $originalCanvas[0].getContext("2d");
   var text
   const User_uploaded_decrypt = {
-    b64_image:'x',
+    b64_image_to_py:'x',
     key:1,
    }
 
@@ -200,3 +200,24 @@ function decodeMessage() {
   $('.binary-decode').fadeIn();
 };
 
+function image_to_b64(){
+  var file = document.querySelector('input[name=baseFile]').files[0];
+  var binary_image = file;
+  var B64_image_to_py = btoa(binary_image);
+
+}
+
+function b64_to_image(B64_image_to_js){
+var binary_image_returned = atob(B64_image_to_js);
+var binary_image_returned_data = new Uint8Array(binary_image_returned.length);
+for (let i = 0;i<binary_image_returned.length; i++){
+  binary_image_returned_data[i] = binary_image_returned.charCodeAt(i);
+
+}
+var blob = new blob([binary_image_returned_data],{type:'image/png'});
+var url_image = URL.createObjectURL(blob);
+var image_returned = new Image();
+image_returned.src = url_image;
+document.body.appendChild(image_returned);
+
+}
