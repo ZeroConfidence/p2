@@ -3,9 +3,11 @@ from Embedder     import Carrier_embedder                                       
 from decoder      import Carrier_decoder                                                     #Imports Decoder file
 import json                                                             #Imports json lib
 from base64 import b64encode,b64decode                                                         #Imports Base64 lib
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import io
+from PIL import Image
+
 
 app = Flask(__name__)
 CORS(app)
@@ -20,10 +22,10 @@ def JSON_Create(data1,data2):
 
 def Image_Converter_Decode(Encrypted_image):
     Bin_Image = b64decode(Encrypted_image,altchars=None)                      #converts the base64 string into binary
-    Byte_Image = bytes(Bin_Image,'utf-8')                               #converts the binary string into a byte grouping
+    #Byte_Image = bytes(str(Bin_Image),'utf-8')                               #converts the binary string into a byte grouping
     IO_Image = io.BytesIO(Bin_Image)                                    #converts the byte grouping into a IO string
-    Image = Image.open(IO_Image)                                        #open the IO string with Pillow
-    return(Image)
+    image = Image.open(IO_Image)                                        #open the IO string with Pillow
+    return(image)
 
 
 def Image_Converter_Encode(Image):
@@ -49,17 +51,22 @@ def Conncetion_Check(Connect):
     else:                                                           #if connection failed
         print("Master File failed to connect")
 
-@app.route('/api/Master_Encrypt',methods=['GET','POST','OPTIONS'])
+@app.route('/api/Master_Encrypt',methods=['POST'])
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
-    if request.method == 'POST':
-        json_from_js = request.json
+    
+        json_from_js = request.get_json()
             
         imported_image = json_from_js['imported_image']
-        message = json_from_js['message']
+        message = json_from_js['msg']
         key = json_from_js['key']
         
+        imported_image = Image_Converter_Decode(imported_image)
+        encoded_image = Carrier_embedder(imported_image,message,key)
+
+        b64_image = Image_Converter_Encode(encoded_image)
+        response = {'b64_image':b64_image.decode('utf-8')}
         
-        return Image_Converter_Encode(Carrier_embedder(imported_image,message,key))            #returns the called carrier_embedder with the imported_image and messages as inputs
+        return jsonify(response)           
 
 
 @app.route('/api/Master_Decrypt')

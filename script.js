@@ -98,9 +98,10 @@ function encodeMessage() {
   var b64_image_to_py = image_to_b64(image)
 
   const User_uploaded_encrypt = {
-    b64_image_to_py:b64_image_to_py,
+    imported_image:b64_image_to_py,
     key:1,
     msg:text,
+
    }
 
   $messageCanvas.prop({
