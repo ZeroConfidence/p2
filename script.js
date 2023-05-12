@@ -88,13 +88,14 @@ function encodeMessage() {
   var originalContext = $originalCanvas[0].getContext("2d");
  
   var messageContext = $messageCanvas[0].getContext("2d");
+  var finalimage
 
   var width = $originalCanvas[0].width;
   var height = $originalCanvas[0].height;
 
   var image = $originalCanvas.image;
  
-  image_to_b64()
+  var b64_image_to_py = image_to_b64(image)
 
   const User_uploaded_encrypt = {
     b64_image_to_py:b64_image_to_py,
@@ -110,24 +111,23 @@ function encodeMessage() {
   // Normalize the origiFnal image and draw it
   var original = originalContext.getImageData(0, 0, width, height);
   
-  fetch('/Master/Master_Encrypt',{
+  fetch('http://loaclhost:5000/Master_Encrypt',{
     method:'post',
     headers:{'content-type':'application/json'},
-    body:json.stringify(User_uploaded_encrypt                                         )//size matters do not question.
+    body:JSON.stringify(User_uploaded_encrypt                                         )//size matters do not question.
     }
     
   )
 .then(response => {
   return response.json();
 })
-.then(responseData)
+.then(Website_Package_Py)
 {
-  b64_to_image(B64_image_to_js)
+finalimage = b64_to_image(Website_Package_Py.b64_image)
 }
   
 
-  var finalimage = read.encoded.json
-  
+
   
   messageContext.putImageData(finalimage, 0, 0);
 
@@ -162,7 +162,7 @@ function previewEncodeImageFromDropdown() {
         .text("Failed to load image")
         .fadeIn();
     };
-    img.src = `https://cs-23-sw-2-08.p2datsw.cs.aau.dk/Stockphotos/${selectedOption}.png`; // replace example.com with your image URL
+    img.src = `../folder/Stockphotos/${selectedOption}.png`; 
     $(".loading").fadeIn();
   }
 }
@@ -170,13 +170,14 @@ function previewEncodeImageFromDropdown() {
 function decodeMessage() {
   var $originalCanvas = $('.decode canvas');
   var originalContext = $originalCanvas[0].getContext("2d");
-  var text
+
+   var Decrypt_this_image = image_to_b64(originalContext)
   const User_uploaded_decrypt = {
-    b64_image_to_py:'x',
+    b64_image_to_py:Decrypt_this_image,
     key:1,
    }
 
-   fetch('/Master/Master_Decrypt',{
+   fetch('http://localhost:5000/Master_Decrypt',{
     method:'post',
     headers:{'content-type':'application/json'},
     body:json.stringify(User_uploaded_decrypt            )//medium is premium 
@@ -191,20 +192,20 @@ function decodeMessage() {
   output = TempName.msg
 }
   
-  //run pyhton
-
   
+
+
   
 
   $('.binary-decode textarea').text(output);
   $('.binary-decode').fadeIn();
 };
 
-function image_to_b64(){
-  var file = document.querySelector('input[name=baseFile]').files[0];
-  var binary_image = file;
+function image_to_b64(image){
+  //var file = document.querySelector('input[name=baseFile]').files[0];
+  var binary_image = image;
   var B64_image_to_py = btoa(binary_image);
-
+  return B64_image_to_py;
 }
 
 function b64_to_image(B64_image_to_js){
@@ -219,5 +220,5 @@ var url_image = URL.createObjectURL(blob);
 var image_returned = new Image();
 image_returned.src = url_image;
 document.body.appendChild(image_returned);
-
+return image_returned;
 }
