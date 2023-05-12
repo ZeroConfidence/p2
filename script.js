@@ -101,7 +101,6 @@ function encodeMessage() {
     b64_image_to_py:b64_image_to_py,
     key:1,
     msg:text,
-    stock_num:0,
    }
 
   $messageCanvas.prop({
@@ -111,15 +110,16 @@ function encodeMessage() {
   // Normalize the origiFnal image and draw it
   var original = originalContext.getImageData(0, 0, width, height);
   
-  fetch('http://loaclhost:5000/Master_Encrypt',{
-    method:'post',
+  fetch('http://localhost:5000/api/Master_Encrypt',{
+    method:'POST',
     headers:{'content-type':'application/json'},
-    body:JSON.stringify(User_uploaded_encrypt                                         )//size matters do not question.
+    body:JSON.stringify(User_uploaded_encrypt)
     }
     
   )
 .then(response => {
-  return response.json();
+
+  return JSON;
 })
 .then(Website_Package_Py)
 {
@@ -177,7 +177,7 @@ function decodeMessage() {
     key:1,
    }
 
-   fetch('http://localhost:5000/Master_Decrypt',{
+   fetch('http://localhost:5000/api/Master_Decrypt',{
     method:'post',
     headers:{'content-type':'application/json'},
     body:json.stringify(User_uploaded_decrypt            )//medium is premium 

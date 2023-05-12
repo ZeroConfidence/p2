@@ -49,21 +49,16 @@ def Conncetion_Check(Connect):
     else:                                                           #if connection failed
         print("Master File failed to connect")
 
-@app.route('/api/Master_Encrypt')
+@app.route('/api/Master_Encrypt',methods=['GET','POST','OPTIONS'])
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
-    json_from_js = request.json
-    
-    Stock_Number = json_from_js['stock_number']
-    imported_image = json_from_js['imported_image']
-    message = json_from_js['message']
-    key = json_from_js['key']
-    
-    
-    
-    if Stock_Number > 0:                                         #If we use a stock number
-        Stock_image = ImageSender(Stock_Number)                      #then stockimage calls the imagesender file with the stock_number as an input
-        return Image_Converter_Encode(Carrier_embedder(Stock_image,message,key))                 #returns the called carrier_embedder with the stockimage and messages as inputs
-    else:                                                           #if else
+    if request.method == 'POST':
+        json_from_js = request.json
+            
+        imported_image = json_from_js['imported_image']
+        message = json_from_js['message']
+        key = json_from_js['key']
+        
+        
         return Image_Converter_Encode(Carrier_embedder(imported_image,message,key))            #returns the called carrier_embedder with the imported_image and messages as inputs
 
 
