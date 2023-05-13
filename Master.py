@@ -59,7 +59,7 @@ def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Impo
         imported_image = json_from_js['imported_image']
         message = json_from_js['msg']
         key = json_from_js['key']
-        
+        return jsonify({'b64_image':imported_image})   
         imported_image = Image_Converter_Decode(imported_image)
         encoded_image = Carrier_embedder(imported_image,message,key)
 
@@ -69,9 +69,13 @@ def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Impo
         return jsonify(response)           
 
 
-@app.route('/api/Master_Decrypt')
+@app.route('/api/Master_Decrypt',methods = ["POST"])
 def Master_Decrypt():                                    #Master decrypted calls for the encrypted image
-    json_from_js = request.json
+    json_from_js = request.get_json()
+
+    msg = json_from_js["message"]
+    response = jsonify({"MSG":msg})
+    return response
     Encrypted_image = Image_Converter_Decode(json_from_js['Encrypted_image'])
     key = json_from_js['key']
 

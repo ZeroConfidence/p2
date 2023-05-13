@@ -2,7 +2,7 @@ const body = document.querySelector("body");
 const toggle = document.querySelector("#toggle");
 const sunIcon = document.querySelector(".toggle .bxs-sun");
 const moonIcon = document.querySelector(".toggle .bx-moon");
-
+var blob
 toggle.addEventListener("change", () => {
     dark_enabled = body.classList.toggle("dark");
     sunIcon.className = sunIcon.className == "bx bxs-sun" ? "bx bx-sun" : "bx bxs-sun";
@@ -93,11 +93,10 @@ function encodeMessage() {
   var width = $originalCanvas[0].width;
   var height = $originalCanvas[0].height;
 
-  var image = $originalCanvas.image;
  
-  var b64_image_to_py = image_to_b64(image)
+  var b64_image_to_py = image_to_b64(messageContext)
 
-  const User_uploaded_encrypt = {
+  var User_uploaded_encrypt = {
     imported_image:b64_image_to_py,
     key:1,
     msg:text,
@@ -118,24 +117,20 @@ function encodeMessage() {
     }
     
   )
-.then(response => {
-
-  return JSON;
-})
-.then(Website_Package_Py)
-{
+.then(response => response.json())
+.then(Website_Package_Py =>{
 finalimage = b64_to_image(Website_Package_Py.b64_image)
-}
+
+messageContext.putImageData(finalimage,0,0)
+
   
-
-
-  
-  messageContext.putImageData(finalimage, 0, 0);
-
-  $(".binary").fadeIn();
-  // $(".images .nulled").fadeIn();
+  }
+  ).catch(error => 
+  {
+    console.error(error);
+  });
   $(".images .message").fadeIn();
-};
+  };
 
 function previewEncodeImageFromDropdown() {
   var selectedOption = $("#Stockphotos option:selected").val();
@@ -171,9 +166,11 @@ function previewEncodeImageFromDropdown() {
 function decodeMessage() {
   var $originalCanvas = $('.decode canvas');
   var originalContext = $originalCanvas[0].getContext("2d");
+  var test1 = "makeastring";
+  const data = {message:test1};
 
    var Decrypt_this_image = image_to_b64(originalContext)
-  const User_uploaded_decrypt = {
+   var User_uploaded_decrypt = {
     b64_image_to_py:Decrypt_this_image,
     key:1,
    }
@@ -181,25 +178,20 @@ function decodeMessage() {
    fetch('http://localhost:5000/api/Master_Decrypt',{
     method:'post',
     headers:{'content-type':'application/json'},
-    body:json.stringify(User_uploaded_decrypt            )//medium is premium 
+    body:JSON.stringify(data   )//medium is premium 
     }
     
   )
-.then(response => {
-  return response.json();
-})
-.then(TempName)
+.then(response => response.json())
+.then(TempName => 
 {
-  output = TempName.msg
-}
   
-  
-
-
-  
-
+  console.log(TempName.MSG);
+  output = TempName.MSG
   $('.binary-decode textarea').text(output);
   $('.binary-decode').fadeIn();
+  
+})
 };
 
 function image_to_b64(image){
@@ -216,7 +208,7 @@ for (let i = 0;i<binary_image_returned.length; i++){
   binary_image_returned_data[i] = binary_image_returned.charCodeAt(i);
 
 }
-var blob = new blob([binary_image_returned_data],{type:'image/png'});
+blob = new Blob([binary_image_returned_data],{type:'image/png'});
 var url_image = URL.createObjectURL(blob);
 var image_returned = new Image();
 image_returned.src = url_image;
