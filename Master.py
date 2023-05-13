@@ -54,11 +54,10 @@ def Conncetion_Check(Connect):
 @app.route('/api/Master_Encrypt',methods=['POST'])
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
     
-        json_from_js = request.get_json()
-            
-        imported_image = json_from_js['imported_image']
-        message = json_from_js['msg']
-        key = json_from_js['key']
+        imported_image = request.get_data('baseFile')
+        #message = request.form['msg']
+        #key = request.form['key']
+        ####### Msg and key not send, we also need to return proper format(we change to form data instead of json)
         return jsonify({'b64_image':imported_image})   
         imported_image = Image_Converter_Decode(imported_image)
         encoded_image = Carrier_embedder(imported_image,message,key)

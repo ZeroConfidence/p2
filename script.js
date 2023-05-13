@@ -2,6 +2,7 @@ const body = document.querySelector("body");
 const toggle = document.querySelector("#toggle");
 const sunIcon = document.querySelector(".toggle .bxs-sun");
 const moonIcon = document.querySelector(".toggle .bx-moon");
+
 var blob
 toggle.addEventListener("change", () => {
     dark_enabled = body.classList.toggle("dark");
@@ -67,7 +68,7 @@ function previewImage(file, canvasSelector, callback) {
         'width': image.width,
         'height': image.height
       });
-
+      
       context.drawImage(image, 0, 0);
 
       callback();
@@ -82,46 +83,55 @@ function encodeMessage() {
   var text = $("textarea.message").val();
 
   var $originalCanvas = $('.original canvas');
- 
   var $messageCanvas = $('.message canvas');
 
   var originalContext = $originalCanvas[0].getContext("2d");
- 
   var messageContext = $messageCanvas[0].getContext("2d");
-  var finalimage
+  
 
   var width = $originalCanvas[0].width;
   var height = $originalCanvas[0].height;
 
- 
-  var b64_image_to_py = image_to_b64(messageContext)
-
-  var User_uploaded_encrypt = {
-    imported_image:b64_image_to_py,
-    key:1,
-    msg:text,
-
-   }
-
-  $messageCanvas.prop({
-    'width': width,
-    'height': height
-  });
-  // Normalize the origiFnal image and draw it
   var original = originalContext.getImageData(0, 0, width, height);
+
+  var original_Blob = new Blob([original.data.buffer],{type:'image/png'});
+  var package_to_py = new FormData();
+  package_to_py.append('baseFile',original_Blob,'outgoing_image.png');
+  package_to_py.append('key',1);
+  package_to_py.append('msg',text);
+  //var b64_image_to_py = image_to_b64(original)
   
+  //var User_uploaded_encrypt = {
+    //imported_image:b64_image_to_py,
+    //key:1,
+    //msg:text,
+
+   
+  //}
+
+  //$messageCanvas.prop({
+    //'width': width,
+   // 'height': height
+ // });
+  
+  
+  
+
   fetch('http://localhost:5000/api/Master_Encrypt',{
     method:'POST',
     headers:{'content-type':'application/json'},
-    body:JSON.stringify(User_uploaded_encrypt)
+    body:package_to_py
     }
     
   )
 .then(response => response.json())
 .then(Website_Package_Py =>{
-finalimage = b64_to_image(Website_Package_Py.b64_image)
+image = b64_to_image(Website_Package_Py.b64_image)
+messageContext.drawImage(image,0,0);
 
-messageContext.putImageData(finalimage,0,0)
+var finalimage_data = messageContext.getImageData(0,0,width,height);
+
+messageContext.putImageData(finalimage_data,0,0)
 
   
   }
