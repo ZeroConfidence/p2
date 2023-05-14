@@ -5,8 +5,9 @@ import json                                                             #Imports
 from base64 import b64encode,b64decode                                                         #Imports Base64 lib
 from flask import Flask, request, send_file, Response,jsonify
 from flask_cors import CORS
-import io
+from io import BytesIO
 from PIL import Image
+import io
 
 
 
@@ -56,11 +57,19 @@ def Conncetion_Check(Connect):
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
     message = request.form['message']
     key = request.form['key']
-    Image = request.files['Base_File'].read()
+    image = request.files['Base_File'].read()
+    image_reworked = Image.open(BytesIO(image))
     
-    encodeimage = Carrier_embedder(Image,message,key)
-    return send_file(io.BytesIO(encodeimage),mimetype='image/png',)
+
+    print(message)
+    print(key)
+    encodeimage = Carrier_embedder(image_reworked,message,key)
+    with io.BytesIO() as output:
+        encodeimage.save(output,format='PNG')
+        encoded_image_reworked = output.getvalue()
+    return send_file(io.BytesIO(encoded_image_reworked),mimetype='image/png')
     
+
 
 
        
@@ -70,7 +79,9 @@ def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Impo
 def Master_Decrypt():                                    #Master decrypted calls for the encrypted image
     image = request.files['decodeFile'].read()
     key = request.form['key']
-    message = Carrier_decoder(image,key)
+    image_reworked = Image.open(BytesIO(image))
+    message = Carrier_decoder(image_reworked,key)
+    
 
 
     return jsonify(message)

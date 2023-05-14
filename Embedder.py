@@ -13,9 +13,10 @@ def set_lsb(n, bit): # changes the last bit of the given integer n to that of th
         return (n | 1)
     else:
         return (n & ~1)
+   
 
 def Carrier_embedder(Carrier,Message,key):
-    image = Image.open(Carrier)
+    image = Carrier#Image.open(Carrier)
 
     message_binary = ''.join(format(ord(c),'08b')for c in Message) #converts the message into it's ASCII equivalent and then converts that into 8 bit binary and joins it into a string
     max_bytes = ((image.size[0] * image.size[1] * 3) / 8) #finds the maximum number of encoded bytes
@@ -38,44 +39,52 @@ def Carrier_embedder(Carrier,Message,key):
     random.shuffle(Pixel_Coordinates) #shuffles around the x and y cordinates for pixel_coordinates to make a new psudorandom sequence based on the given key
     
     for x,y in Pixel_Coordinates:
-        red, green, blue = pixels[x, y]
-
+        red, green, blue, alpha = pixels[x, y]
+        
         #while loop encodes the first bits with the length of the message
         while Bits_encoded < binary_length_max_bytes:
                 
             red = set_lsb(red,message_length_binary[Bits_encoded]) 
+            print(red)
             Bits_encoded += 1
-
+            print(Bits_encoded)
+            
             if Bits_encoded==binary_length_max_bytes:
                     break
 
             green = set_lsb(green,message_length_binary[Bits_encoded])
+            print(green)
             Bits_encoded += 1
-
+            print(Bits_encoded)
+           
             if Bits_encoded==binary_length_max_bytes:
                     break
 
-            blue = set_lsb(blue,message_length_binary[Bits_encoded]) 
+            blue = set_lsb(blue,message_length_binary[Bits_encoded])
+            print(blue) 
             Bits_encoded += 1
-
+            print(Bits_encoded)
+            
             if Bits_encoded==binary_length_max_bytes:
                     break
+            
 
 
         #code does these operations only if entire message has not been encoded and not before the length of the massage have been encoded
-        if Bits_encoded < len(message_binary+binary_length_max_bytes) & Bits_encoded > binary_length_max_bytes:
+        
+        if Bits_encoded < len(message_binary)+binary_length_max_bytes & Bits_encoded > binary_length_max_bytes:
             red = set_lsb(red,(message_binary[Bits_encoded-binary_length_max_bytes]))#encodes red channel for current pixel 
             Bits_encoded += 1
 
-        if Bits_encoded < len(message_binary+binary_length_max_bytes) & Bits_encoded > binary_length_max_bytes:
+        if Bits_encoded < len(message_binary)+binary_length_max_bytes & Bits_encoded > binary_length_max_bytes:
             green = set_lsb(green,(message_binary[Bits_encoded-binary_length_max_bytes]))#encodes green channel for current pixel 
             Bits_encoded += 1
 
-        if Bits_encoded < len(message_binary+binary_length_max_bytes) & Bits_encoded > binary_length_max_bytes:
+        if Bits_encoded < len(message_binary)+binary_length_max_bytes & Bits_encoded > binary_length_max_bytes:
             blue = set_lsb(blue,(message_binary[Bits_encoded-binary_length_max_bytes]))#encodes blue channel for current pixel 
             Bits_encoded += 1
 
         pixels[x, y] = (red, green, blue)
 
-        if Bits_encoded >= len(message_binary+binary_length_max_bytes) & Bits_encoded > binary_length_max_bytes: #once entire message is encoded returns modified image  
-            return image
+        #if Bits_encoded >= len(message_binary+binary_length_max_bytes) & Bits_encoded > binary_length_max_bytes: #once entire message is encoded returns modified image  
+    return image
