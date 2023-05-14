@@ -3,10 +3,11 @@ from Embedder     import Carrier_embedder                                       
 from decoder      import Carrier_decoder                                                     #Imports Decoder file
 import json                                                             #Imports json lib
 from base64 import b64encode,b64decode                                                         #Imports Base64 lib
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, send_file, Response,jsonify
 from flask_cors import CORS
 import io
 from PIL import Image
+
 
 
 app = Flask(__name__)
@@ -53,33 +54,31 @@ def Conncetion_Check(Connect):
 
 @app.route('/api/Master_Encrypt',methods=['POST'])
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
+    message = request.form['message']
+    key = request.form['key']
+    Image = request.files['Base_File'].read()
     
-        imported_image = request.get_data('baseFile')
-        #message = request.form['msg']
-        #key = request.form['key']
-        ####### Msg and key not send, we also need to return proper format(we change to form data instead of json)
-        return jsonify({'b64_image':imported_image})   
-        imported_image = Image_Converter_Decode(imported_image)
-        encoded_image = Carrier_embedder(imported_image,message,key)
+    encodeimage = Carrier_embedder(Image,message,key)
+    return send_file(io.BytesIO(encodeimage),mimetype='image/png',)
+    
 
-        b64_image = Image_Converter_Encode(encoded_image)
-        response = {'b64_image':b64_image.decode('utf-8')}
-        
-        return jsonify(response)           
+
+       
 
 
 @app.route('/api/Master_Decrypt',methods = ["POST"])
 def Master_Decrypt():                                    #Master decrypted calls for the encrypted image
-    json_from_js = request.get_json()
-
-    msg = json_from_js["message"]
-    response = jsonify({"MSG":msg})
-    return response
-    Encrypted_image = Image_Converter_Decode(json_from_js['Encrypted_image'])
-    key = json_from_js['key']
+    image = request.files['decodeFile'].read()
+    key = request.form['key']
+    message = Carrier_decoder(image,key)
 
 
-    return Carrier_decoder(Encrypted_image,key)                         #returns the called Carrier decoder with the encrypted image as input
+    return jsonify(message)
+
+
+
+
+    
 
 if __name__ == '__main__':
     app.debug = True

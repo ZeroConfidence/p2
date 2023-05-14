@@ -39,7 +39,7 @@ function previewDecodeImage() {
 }
 
 function previewEncodeImage() {
-  var file = document.querySelector("input[name=baseFile]").files[0];
+  var file = document.querySelector("input[name=Base_File]").files[0];
 
   $(".images .nulled").hide();
   $(".images .message").hide();
@@ -75,72 +75,43 @@ function previewImage(file, canvasSelector, callback) {
     }
   }
 }
+const enurl = 'http://127.0.0.1:5000/api/Master_Encrypt';
+const deurl = 'http://127.0.0.1:5000/api/Master_Decrypt';
+const form = document.querySelector('#encodeform');
+const encode_butt = form.querySelector('button[type="submit"]');
 
-function encodeMessage() {
-  $(".error").hide();
-  $(".binary").hide();
+encode_butt.addEventListener('click',(event)=>{
+  event.preventDefault();
 
-  var text = $("textarea.message").val();
+  const formdata = new FormData(form);
+  const canvas = document.querySelector('canvas[name = "message"]')  
 
-  var $originalCanvas = $('.original canvas');
-  var $messageCanvas = $('.message canvas');
-
-  var originalContext = $originalCanvas[0].getContext("2d");
-  var messageContext = $messageCanvas[0].getContext("2d");
-  
-
-  var width = $originalCanvas[0].width;
-  var height = $originalCanvas[0].height;
-
-  var original = originalContext.getImageData(0, 0, width, height);
-
-  var original_Blob = new Blob([original.data.buffer],{type:'image/png'});
-  var package_to_py = new FormData();
-  package_to_py.append('baseFile',original_Blob,'outgoing_image.png');
-  package_to_py.append('key',1);
-  package_to_py.append('msg',text);
-  //var b64_image_to_py = image_to_b64(original)
-  
-  //var User_uploaded_encrypt = {
-    //imported_image:b64_image_to_py,
-    //key:1,
-    //msg:text,
-
-   
-  //}
-
-  //$messageCanvas.prop({
-    //'width': width,
-   // 'height': height
- // });
-  
-  
-  
-
-  fetch('http://localhost:5000/api/Master_Encrypt',{
+ 
+  fetch(enurl,{
     method:'POST',
-    headers:{'content-type':'application/json'},
-    body:package_to_py
+    body:formdata
     }
     
-  )
-.then(response => response.json())
-.then(Website_Package_Py =>{
-image = b64_to_image(Website_Package_Py.b64_image)
-messageContext.drawImage(image,0,0);
-
-var finalimage_data = messageContext.getImageData(0,0,width,height);
-
-messageContext.putImageData(finalimage_data,0,0)
-
+   )
+    .then(response => response.blob())
+    .then(Website_Package_Py =>{
+    const returned_image = new Image();
+    returned_image.src = URL.createObjectURL(Website_Package_Py)
+    
+    returned_image.onload =()=>
+    {
+      canvas.width =returned_image.width;
+      canvas.height =returned_image.height;
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(returned_image,0,0)
+    }
+    
   
-  }
+   }
   ).catch(error => 
-  {
-    console.error(error);
-  });
-  $(".images .message").fadeIn();
-  };
+  {console.error(error);});
+   $(".images .message").fadeIn();
+})
 
 function previewEncodeImageFromDropdown() {
   var selectedOption = $("#Stockphotos option:selected").val();
@@ -173,36 +144,31 @@ function previewEncodeImageFromDropdown() {
   }
 }
 
-function decodeMessage() {
-  var $originalCanvas = $('.decode canvas');
-  var originalContext = $originalCanvas[0].getContext("2d");
-  var test1 = "makeastring";
-  const data = {message:test1};
 
-   var Decrypt_this_image = image_to_b64(originalContext)
-   var User_uploaded_decrypt = {
-    b64_image_to_py:Decrypt_this_image,
-    key:1,
-   }
+const Decodeform = document.querySelector('#decodeform');
+const decode_butt = Decodeform.querySelector('[type="submit"]');
 
-   fetch('http://localhost:5000/api/Master_Decrypt',{
+decode_butt.addEventListener('click',(event)=>{
+  event.preventDefault();
+
+  const formdata1 = new FormData(decodeform);
+  
+
+   fetch(deurl,{
     method:'post',
-    headers:{'content-type':'application/json'},
-    body:JSON.stringify(data   )//medium is premium 
+    body:formdata1//medium is premium 
     }
     
   )
 .then(response => response.json())
-.then(TempName => 
+.then(output => 
 {
   
-  console.log(TempName.MSG);
-  output = TempName.MSG
   $('.binary-decode textarea').text(output);
   $('.binary-decode').fadeIn();
   
 })
-};
+})
 
 function image_to_b64(image){
   //var file = document.querySelector('input[name=baseFile]').files[0];

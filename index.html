@@ -51,10 +51,13 @@
 		It's important to remember that if you want to hide a lot of text, you need to choose a big picture. If you try to hide too much text in a small picture, it won't work and you'll be told that it's not possible.<br><br>
 
 		The best part is that nobody will be able to see the picture or message except for you! It's like a secret between you and your computer, and nobody else can see it.</p>
-<form class="form" inctype = "multipart/form-data">
+<form class="form" inctype = "multipart/form-data" id=encodeform>
 	<div class="form-group">
-		<input class="form-control" type="file" accept="image/png" name="baseFile" onchange="previewEncodeImage()"> <!-- Tillader brugeren at uploade billedet, der skal bruges til kodning -->
-	<label for="Stockphotos">Or choose an image from our collection:</label> <!-- Fort ller brugeren, at de ogs  kan v lge et billede fra samlingen -->
+		<input class="form-control" type="file" accept="image/png" name="Base_File" onchange="previewEncodeImage()"> <!-- Tillader brugeren at uploade billedet, der skal bruges til kodning -->
+	  <input class="form-control" type ="text" name="message" placeholder="Enter Message">
+    <input class="form-control" type ="number" name="key" placeholder="Enter your Key number">
+
+    <label for="Stockphotos">Or choose an image from our collection:</label> <!-- Fort ller brugeren, at de ogs  kan v lge et billede fra samlingen -->
   <select class="form-control" id="Stockphotos" onchange="previewEncodeImageFromDropdown()">
   <option value="">Select an image</option>
   <option value="cat1">Cat 1</option>
@@ -70,13 +73,9 @@
  <option value="cat11">Cat 11</option>
 </select>
           </div>
-
-           <div class="form-group">
-              <textarea class="form-control message" rows="3" placeholder="Enter your message here"></textarea> <!-- Indtastningsfelt til besked -->
-          </div>
-
+          
           <div class="form-group">
-            <button class="encode btn btn-default pull-right" onclick="encodeMessage()">Encode</button> <!-- Encode-knap -->
+            <button type ="submit" class="encode btn btn-default pull-right" name="henrick">Encode</button> <!-- Encode-knap -->
           </div>
         </form>
         <div class="clearfix"></div>
@@ -100,7 +99,7 @@
         </div>
         <div class="message" style="display: none;"> <!-- Viser det skjulte billede, skjules som standard -->
           <h3>Message hidden in image (right click <span class="glyphicon glyphicon-arrow-right"></span> save as)</h3>
-          <canvas></canvas>
+          <canvas name="message"></canvas>
         </div>
       </div>
     </div>
@@ -112,12 +111,13 @@
           To decode a hidden message from an image, just choose an image and hit the <strong>Decode</strong> button.<br/><br/>
           Neither the image nor the message that has been hidden will be at any moment transmitted over the web, all the magic happens within your browser.
         </p>
-        <form class="form">  <!-- Formular til at v lge billede til at afkode besked -->
+        <form class="form" id = "decodeform">  <!-- Formular til at v lge billede til at afkode besked -->
           <div class="form-group">
             <input class="form-control" type="file" accept="image/png" name="decodeFile" onchange="previewDecodeImage()">
           </div>
+          <input class="form-control" type ="number" name="key" placeholder="Enter your Key number">
           <div class="form-group">
-            <button class="decode btn btn-default pull-right" onclick="decodeMessage()">Decode</button>
+            <button type="submit" class="decode btn btn-default pull-right" name="larry">Decode</button>
           </div>
         </form>
         <div class="clearfix"></div>
