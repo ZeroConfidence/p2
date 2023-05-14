@@ -37,7 +37,7 @@ def Carrier_embedder(Carrier,Message,key):
     random.seed(key)# sets key as the seed for the psudo-random number generator 
     Pixel_Coordinates = [(x,y)for x in range(image.size[0]) for y in range(image.size[1])] #loads the coordinates for he pixels into the pixel_coordinate variable 
     random.shuffle(Pixel_Coordinates) #shuffles around the x and y cordinates for pixel_coordinates to make a new psudorandom sequence based on the given key
-    
+    #re-write all of this(look down)
     for x,y in Pixel_Coordinates:
         red, green, blue, alpha = pixels[x, y]
         
