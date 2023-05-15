@@ -46,13 +46,13 @@ def Carrier_embedder(Carrier,Message,key):
         continue_counter = 0
         #while loop encodes the first bits with the length of the message
         if Bits_encoded < binary_length_max_bytes:
-            print("cordinates",x,y)
+            #print("cordinates",x,y)
             #print("OG-red",red)
             #print("OG-green",green)
             #print("OG-blue",blue)
               
             red = set_lsb(red,message_length_binary[Bits_encoded]) 
-            print("red",red)
+            #print("red",red)
             Bits_encoded += 1
             continue_counter =1
             #print("bitNR",Bits_encoded)
@@ -60,14 +60,14 @@ def Carrier_embedder(Carrier,Message,key):
         if Bits_encoded < binary_length_max_bytes:    
 
             green = set_lsb(green,message_length_binary[Bits_encoded])
-            print("green",green)
+            #print("green",green)
             Bits_encoded += 1
             #print("bitNR",Bits_encoded)
            
         if Bits_encoded < binary_length_max_bytes:    
 
             blue = set_lsb(blue,message_length_binary[Bits_encoded])
-            print("blue",blue) 
+            #print("blue",blue) 
             Bits_encoded += 1
             #print("bitNR",Bits_encoded)
             

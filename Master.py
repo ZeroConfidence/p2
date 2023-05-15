@@ -61,8 +61,8 @@ def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Impo
     image_reworked = Image.open(BytesIO(image))
     
 
-    print(message)
-    print(key)
+    #print(message)
+    #print(key)
     encodeimage = Carrier_embedder(image_reworked,message,key)
     with io.BytesIO() as output:
         encodeimage.save(output,format='PNG')
