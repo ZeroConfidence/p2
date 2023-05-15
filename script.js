@@ -3,6 +3,7 @@ const toggle = document.querySelector("#toggle");
 const sunIcon = document.querySelector(".toggle .bxs-sun");
 const moonIcon = document.querySelector(".toggle .bx-moon");
 
+var blob
 toggle.addEventListener("change", () => {
     dark_enabled = body.classList.toggle("dark");
     sunIcon.className = sunIcon.className == "bx bxs-sun" ? "bx bx-sun" : "bx bxs-sun";
@@ -22,9 +23,7 @@ if ( (localStorage.getItem("dark_enabled") || "ne") == "ne") {
 
 
 
-if (Math.round(Math.random() * 10) == 2) {
-  window.location = "https://youtu.be/eVTXPUF4Oz4?t=18"
-}
+
 
 
 $('button.encode, button.decode').click(function(event) {
@@ -40,7 +39,7 @@ function previewDecodeImage() {
 }
 
 function previewEncodeImage() {
-  var file = document.querySelector("input[name=baseFile]").files[0];
+  var file = document.querySelector("input[name=Base_File]").files[0];
 
   $(".images .nulled").hide();
   $(".images .message").hide();
@@ -69,96 +68,50 @@ function previewImage(file, canvasSelector, callback) {
         'width': image.width,
         'height': image.height
       });
-
+      
       context.drawImage(image, 0, 0);
 
       callback();
     }
   }
 }
+const enurl = 'http://127.0.0.1:5000/api/Master_Encrypt';
+const deurl = 'http://127.0.0.1:5000/api/Master_Decrypt';
+const form = document.querySelector('#encodeform');
+const encode_butt = form.querySelector('button[type="submit"]');
 
-function encodeMessage() {
-  $(".error").hide();
-  $(".binary").hide();
+encode_butt.addEventListener('click',(event)=>{
+  event.preventDefault();
 
-  var text = $("textarea.message").val();
+  const formdata = new FormData(form);
+  const canvas = document.querySelector('canvas[name = "message"]')  
 
-  var $originalCanvas = $('.original canvas');
-  var $nulledCanvas = $('.nulled canvas');
-  var $messageCanvas = $('.message canvas');
-
-  var originalContext = $originalCanvas[0].getContext("2d");
-  var nulledContext = $nulledCanvas[0].getContext("2d");
-  var messageContext = $messageCanvas[0].getContext("2d");
-
-  var width = $originalCanvas[0].width;
-  var height = $originalCanvas[0].height;
-
-  // Check if the image is big enough to hide the message
-  if ((text.length * 8) > (width * height * 3)) {
-    $(".error")
-      .text("Text too long for chosen image....")
-      .fadeIn();
-
-    return;
-  }
-
-  $nulledCanvas.prop({
-    'width': width,
-    'height': height
-  });
-
-  $messageCanvas.prop({
-    'width': width,
-    'height': height
-  });
-  // Normalize the original image and draw it
-  var original = originalContext.getImageData(0, 0, width, height);
-  var pixel = original.data;
-  for (var i = 0, n = pixel.length; i < n; i += 4) {
-    for (var offset =0; offset < 3; offset ++) {
-      if(pixel[i + offset] %2 != 0) {
-        pixel[i + offset]--;
-      }
+ 
+  fetch(enurl,{
+    method:'POST',
+    body:formdata
     }
-  }
-  nulledContext.putImageData(original, 0, 0);
-
-  // Convert the message to a binary string
-  var binaryMessage = "";
-  for (i = 0; i < text.length; i++) {
-    var binaryChar = text[i].charCodeAt(0).toString(2);
-
-    // Pad with 0 until the binaryChar has a lenght of 8 (1 Byte)
-    while(binaryChar.length < 8) {
-      binaryChar = "0" + binaryChar;
+    
+   )
+    .then(response => response.blob())
+    .then(Website_Package_Py =>{
+    const returned_image = new Image();
+    returned_image.src = URL.createObjectURL(Website_Package_Py)
+    
+    returned_image.onload =()=>
+    {
+      canvas.width =returned_image.width;
+      canvas.height =returned_image.height;
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(returned_image,0,0)
     }
-
-    binaryMessage += binaryChar;
-  }
-  $('.binary textarea').text(binaryMessage);
-
-  // Apply the binary string to the image and draw it
-  var message = nulledContext.getImageData(0, 0, width, height);
-  pixel = message.data;
-  counter = 0;
-  for (var i = 0, n = pixel.length; i < n; i += 4) {
-    for (var offset =0; offset < 3; offset ++) {
-      if (counter < binaryMessage.length) {
-        pixel[i + offset] += parseInt(binaryMessage[counter]);
-        counter++;
-      }
-      else {
-        break;
-      }
-    }
-  }
-  messageContext.putImageData(message, 0, 0);
-
-  $(".binary").fadeIn();
-  // $(".images .nulled").fadeIn();
-  $(".images .message").fadeIn();
-};
+    
+  
+   }
+  ).catch(error => 
+  {console.error(error);});
+   $(".images .message").fadeIn();
+})
 
 function previewEncodeImageFromDropdown() {
   var selectedOption = $("#Stockphotos option:selected").val();
@@ -186,41 +139,55 @@ function previewEncodeImageFromDropdown() {
         .text("Failed to load image")
         .fadeIn();
     };
-    img.src = `https://cs-23-sw-2-08.p2datsw.cs.aau.dk/Stockphotos/${selectedOption}.png`; // replace example.com with your image URL
+    img.src = `../folder/Stockphotos/${selectedOption}.png`; 
     $(".loading").fadeIn();
   }
 }
 
-function decodeMessage() {
-  var $originalCanvas = $('.decode canvas');
-  var originalContext = $originalCanvas[0].getContext("2d");
 
-  var original = originalContext.getImageData(0, 0, $originalCanvas.width(), $originalCanvas.height());
-  var binaryMessage = "";
-  var pixel = original.data;
-  for (var i = 0, n = pixel.length; i < n; i += 4) {
-    for (var offset =0; offset < 3; offset ++) {
-      var value = 0;
-      if(pixel[i + offset] %2 != 0) {
-        value = 1;
-      }
+const Decodeform = document.querySelector('#decodeform');
+const decode_butt = Decodeform.querySelector('[type="submit"]');
 
-      binaryMessage += value;
+decode_butt.addEventListener('click',(event)=>{
+  event.preventDefault();
+
+  const formdata1 = new FormData(decodeform);
+  
+
+   fetch(deurl,{
+    method:'post',
+    body:formdata1//medium is premium 
     }
-  }
-
-  var output = "";
-  for (var i = 0; i < binaryMessage.length; i += 8) {
-    var c = 0;
-    for (var j = 0; j < 8; j++) {
-      c <<= 1;
-      c |= parseInt(binaryMessage[i + j]);
-    }
-
-    output += String.fromCharCode(c);
-  }
-
+    
+  )
+.then(response => response.json())
+.then(output => 
+{
+  
   $('.binary-decode textarea').text(output);
   $('.binary-decode').fadeIn();
-};
+  
+})
+})
 
+function image_to_b64(image){
+  //var file = document.querySelector('input[name=baseFile]').files[0];
+  var binary_image = image;
+  var B64_image_to_py = btoa(binary_image);
+  return B64_image_to_py;
+}
+
+function b64_to_image(B64_image_to_js){
+var binary_image_returned = atob(B64_image_to_js);
+var binary_image_returned_data = new Uint8Array(binary_image_returned.length);
+for (let i = 0;i<binary_image_returned.length; i++){
+  binary_image_returned_data[i] = binary_image_returned.charCodeAt(i);
+
+}
+blob = new Blob([binary_image_returned_data],{type:'image/png'});
+var url_image = URL.createObjectURL(blob);
+var image_returned = new Image();
+image_returned.src = url_image;
+document.body.appendChild(image_returned);
+return image_returned;
+}
