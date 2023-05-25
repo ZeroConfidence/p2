@@ -1,4 +1,4 @@
-from Imagehandler import ImageSender                                               #Imports Imagehandler file
+#from Imagehandler import ImageSender                                               #Imports Imagehandler file
 from Embedder     import Carrier_embedder                                                    #Imports Embedder file
 from decoder      import Carrier_decoder                                                     #Imports Decoder file
 import json                                                             #Imports json lib
@@ -55,16 +55,17 @@ def Conncetion_Check(Connect):
 
 @app.route('/api/Master_Encrypt',methods=['POST'])
 def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Imported_Image and the message
+    #get the data from the website's form data
     message = request.form['message']
     key = request.form['key']
     image = request.files['Base_File'].read()
-    image_reworked = Image.open(BytesIO(image))
-    
 
-    #print(message)
-    #print(key)
-    encodeimage = Carrier_embedder(image_reworked,message,key)
-    with io.BytesIO() as output:
+    image_reworked = Image.open(BytesIO(image))#opens the image data as an image
+    
+    encodeimage = Carrier_embedder(image_reworked,message,key) #embeds messag into image
+    
+    #converts encoded image to PNG format
+    with io.BytesIO() as output: 
         encodeimage.save(output,format='PNG')
         encoded_image_reworked = output.getvalue()
     return send_file(io.BytesIO(encoded_image_reworked),mimetype='image/png')
@@ -77,14 +78,15 @@ def Master_Encrypt():  #Master encrypter calls for stockbool, Stock_number, Impo
 
 @app.route('/api/Master_Decrypt',methods = ["POST"])
 def Master_Decrypt():                                    #Master decrypted calls for the encrypted image
-    image = request.files['decodeFile'].read()
+    #get the data from the website's form data
+    image = request.files['decodeFile'].read()#use .read to save image in memory
     key = request.form['key']
-    image_reworked = Image.open(BytesIO(image))
-    message = Carrier_decoder(image_reworked,key)
+
+    image_reworked = Image.open(BytesIO(image))#opens the image data as an image
     
-
-
-    return jsonify(message)
+    message = Carrier_decoder(image_reworked,key)#extractes message from image
+    
+    return jsonify(message)#returns message as json
 
 
 
